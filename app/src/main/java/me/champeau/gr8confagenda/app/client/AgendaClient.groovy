@@ -68,8 +68,8 @@ class AgendaClient {
     protected static Slot toSlot(Map source) {
         new Slot(
                 date: (String) source.date,
-                startTime: (String) source.startTime,
-                endTime: (String) source.endTime
+                startTime: ((String) source.startTime).substring(0,5),
+                endTime: ((String) source.endTime).substring(0,5)
         )
     }
 

@@ -1,8 +1,10 @@
 package me.champeau.gr8confagenda.app
 
 import android.content.Context
+import android.graphics.Color
 import android.text.TextUtils
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -14,6 +16,8 @@ import me.champeau.gr8confagenda.app.client.Session
 
 @CompileStatic
 class SessionListAdapter extends ArrayAdapter<Session> {
+
+    private LayoutInflater inflater
 
     private static class DateFilter extends Filter {
         private final SessionListAdapter adapter
@@ -49,6 +53,7 @@ class SessionListAdapter extends ArrayAdapter<Session> {
     SessionListAdapter(Context context, int resource, int textViewResourceId, List<Session> objects) {
         super(context, resource, textViewResourceId, objects)
         notifyOnChange = false
+        this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)
     }
 
     @Override
@@ -58,14 +63,20 @@ class SessionListAdapter extends ArrayAdapter<Session> {
 
     @Override
     View getView(int position, View convertView, ViewGroup parent) {
-        def view = super.getView(position, convertView, parent)
-        if (view instanceof TextView) {
-            view.singleLine = true
-            view.ellipsize = TextUtils.TruncateAt.MARQUEE
-            view.marqueeRepeatLimit = -1
-            def session = getItem(position)
-            view.setText(session.title)
+        View view = convertView
+        if (!view) {
+            view = inflater.inflate(R.layout.session_list_row, null)
         }
+        Session session = getItem(position)
+
+        def titleElem = (TextView) view.findViewById(R.id.session_list_title)
+        titleElem.setText(session.title)
+        def trackElem = (TextView) view.findViewById(R.id.session_list_track)
+        trackElem.setText(session.slot.trackName)
+        trackElem.setBackgroundColor(Color.parseColor(session.slot.trackColor))
+        def timeElem = (TextView) view.findViewById(R.id.session_list_time)
+        String timeText = "${session.slot.startTime}\n${session.slot.endTime}"
+        timeElem.setText(timeText)
         view
     }
 }

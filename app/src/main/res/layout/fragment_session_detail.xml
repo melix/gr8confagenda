@@ -1,87 +1,96 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/session_detail"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:columnCount="2"
     android:orientation="vertical"
     android:padding="16dp"
-    android:rowCount="2"
     tools:context="me.champeau.gr8confagenda.app.SessionDetailFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/session_detail_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:background="@android:color/holo_blue_dark"
-            android:clickable="false"
-            android:contentDescription="Profile image"
-            android:maxHeight="120dp"
-            android:maxWidth="120dp"
-            android:minHeight="120dp"
-            android:minWidth="120dp" />
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/session_detail_title"
+            <ImageView
+                android:id="@+id/session_detail_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Session title"
-                android:textAppearance="?android:attr/textAppearanceSearchResultTitle" />
+                android:layout_margin="4dp"
+                android:background="@android:color/holo_blue_dark"
+                android:clickable="false"
+                android:contentDescription="Profile image"
+                android:maxHeight="120dp"
+                android:maxWidth="120dp"
+                android:minHeight="120dp"
+                android:minWidth="120dp" />
 
-            <TextView
-                android:id="@+id/session_detail_speaker"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Speaker"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:layout_margin="4dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/session_detail_track"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Track"
-                android:padding="2dp"
-                android:background="#64FFFF"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                <TextView
+                    android:id="@+id/session_detail_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Session title"
+                    android:textAppearance="?android:attr/textAppearanceSearchResultTitle" />
 
-            <TextView
-                android:id="@+id/session_detail_slot"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Slot"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                <TextView
+                    android:id="@+id/session_detail_speaker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Speaker"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/session_detail_track"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#64FFFF"
+                    android:padding="2dp"
+                    android:text="Track"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <TextView
+                    android:id="@+id/session_detail_slot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Slot"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <TextView
+                    android:id="@+id/session_detail_twitter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Twitter"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
 
-
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:padding="4dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
+                android:id="@+id/textViewTitleAbstract"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginTop="4dp"
                 android:text="Abstract"
-                android:id="@+id/textViewTitleAbstract" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/session_detail_body"
@@ -92,11 +101,13 @@
                 android:textIsSelectable="true" />
 
             <TextView
+                android:id="@+id/textViewTitleAboutSpeaker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginTop="4dp"
                 android:text="About the speaker"
-                android:id="@+id/textViewTitleAboutSpeaker" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/session_detail_speaker_detail"
@@ -108,7 +119,7 @@
 
 
         </LinearLayout>
-    </ScrollView>
 
+    </LinearLayout>
+</ScrollView>
 
-</LinearLayout>

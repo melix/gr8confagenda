@@ -17,7 +17,7 @@ import me.champeau.gr8confagenda.app.client.Session;
  * 'activated' state upon selection. This helps indicate which item is
  * currently being viewed in a {@link SessionDetailFragment}.
  * <p>
- * Activities containing this fragment MUST implement the {@link Callbacks}
+ * Activities containing this fragment MUST implement the {@link SessionListFragment.Callbacks}
  * interface.
  */
 @CompileStatic
