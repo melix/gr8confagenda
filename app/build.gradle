@@ -1,0 +1,63 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.9.0'
+    }
+}
+
+apply plugin: 'android'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.0.3"
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 19
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+
+    packagingOptions {
+        // workaround for http://stackoverflow.com/questions/20673625/android-gradle-plugin-0-7-0-duplicate-files-during-packaging-of-apk
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/groovy-release-info.properties'
+    }
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:19.1.0'
+    compile 'org.codehaus.groovy:groovy:2.3.0-droid-SNAPSHOT'
+    compile 'org.codehaus.groovy:groovy-json:2.3.0-droid-SNAPSHOT'
+    compile 'com.koushikdutta.urlimageviewhelper:urlimageviewhelper:1.0.4'
+}
+
+android.applicationVariants.all {
+    task "groovy${name}Compile"(type: GroovyCompile) {
+        source = javaCompile.source + fileTree('src/main/java').include('**/*.groovy')
+        destinationDir = javaCompile.destinationDir
+        classpath = javaCompile.classpath
+        groovyClasspath = classpath
+        sourceCompatibility = '1.6'
+        targetCompatibility = '1.6'
+        doFirst {
+            def runtimeJars = plugins.findPlugin(com.android.build.gradle.AppPlugin).runtimeJars
+            classpath = files(runtimeJars) + classpath
+        }
+    }
+    javaCompile.dependsOn("groovy${name}Compile")
+    javaCompile.enabled = false
+}

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="me.champeau.gr8confagenda.app" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="me.champeau.gr8confagenda.app.SplashScreenActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="me.champeau.gr8confagenda.app.SessionListActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="me.champeau.gr8confagenda.app.SessionDetailActivity"
+            android:label="@string/title_session_detail"
+            android:parentActivityName="me.champeau.gr8confagenda.app.SessionListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="me.champeau.gr8confagenda.app.SessionListActivity" />
+        </activity>
+
+        <service
+            android:name="me.champeau.gr8confagenda.app.AgendaService"
+            android:exported="false" >
+        </service>
+
+    </application>
+
+</manifest>
