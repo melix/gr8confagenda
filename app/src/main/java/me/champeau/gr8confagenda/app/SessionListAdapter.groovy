@@ -17,26 +17,36 @@ class SessionListAdapter extends ArrayAdapter<Session> {
 
     private LayoutInflater inflater
 
-    private static class DateFilter extends Filter {
+    private Filter filter
+
+    public static class SessionFilter extends Filter {
+        String trackName
+        Long speakerId
+
         private final SessionListAdapter adapter
 
-        DateFilter(SessionListAdapter adapter) {
+        SessionFilter(SessionListAdapter adapter) {
             this.adapter = adapter
         }
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults()
-            if (!constraint) {
-                results.values = Application.instance.sessions
-                results.count = adapter.count
-            } else {
-                def values = Application.instance.sessions.findAll {
-                    it.slot.date == constraint
-                }
-                results.values = values
-                results.count = values.size()
+            def values = Application.instance.sessions.findAll {
+                it.slot.date == constraint
             }
+            if (trackName) {
+                values = values.findAll {
+                    it.slot.trackName == trackName
+                }
+            }
+            if (speakerId) {
+                values = values.findAll {
+                    it.speakerId == speakerId
+                }
+            }
+            results.values = values
+            results.count = values.size()
             results
         }
 
@@ -56,7 +66,10 @@ class SessionListAdapter extends ArrayAdapter<Session> {
 
     @Override
     Filter getFilter() {
-        return new DateFilter(this)
+        if (filter==null) {
+            filter = new SessionFilter(this)
+        }
+        filter
     }
 
     @Override

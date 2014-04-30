@@ -3,10 +3,19 @@ package me.champeau.gr8confagenda.app
 import android.app.ActionBar
 import android.app.Activity
 import android.app.FragmentTransaction
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.view.MenuItemCompat
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import groovy.transform.CompileStatic
 
@@ -126,8 +135,106 @@ class SessionListActivity extends Activity
 
     }
 
+    @Override
+    boolean onCreateOptionsMenu(Menu menu) {
+        menuInflater.inflate(R.menu.session_list_menu, menu)
+        def tracks = menu.findItem(R.id.action_select_track)
+        def speakers = menu.findItem(R.id.action_select_speaker)
+
+        Set<String> trackNames = new TreeSet<String>()
+        Set<String> speakerNames = new TreeSet<String>()
+        [trackNames,speakerNames]*.add('')
+        def sessionListAdapter = sessionListAdapter()
+
+        Application.instance.sessions.collect(trackNames) { item ->
+            item.slot.trackName
+        }
+        Application.instance.speakers.collect(speakerNames) { item ->
+            item.name
+        }
+
+        Spinner trackView = (Spinner) tracks.actionView.findViewById(R.id.menu_session_list)
+        Spinner speakersView = (Spinner) speakers.actionView.findViewById(R.id.menu_speaker_list)
+        def trackAdapter = new SimpleArrayAdapter(this, trackNames.toList())
+        def speakerAdapter = new SimpleArrayAdapter(this, speakerNames.toList())
+        trackView.adapter = trackAdapter
+        speakersView.adapter = speakerAdapter
+        trackView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((SessionListAdapter.SessionFilter)sessionListAdapter.filter).trackName = trackAdapter.getItem(position)
+                doFilter()
+            }
+
+            @Override
+            void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        })
+        speakersView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                def item = speakerAdapter.getItem(position)
+                ((SessionListAdapter.SessionFilter)sessionListAdapter.filter).speakerId =
+                        Application.instance.speakers.find { it.name == item }?.id
+                doFilter()
+            }
+
+            @Override
+            void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        })
+
+        // the following code is a workaround for action views overlapping...
+        // there must be a better way to handle this!
+        MenuItemCompat.setOnActionExpandListener(tracks, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            boolean onMenuItemActionExpand(MenuItem item) {
+                speakers.collapseActionView()
+                true
+            }
+
+            @Override
+            boolean onMenuItemActionCollapse(MenuItem item) {
+                true
+            }
+        })
+        MenuItemCompat.setOnActionExpandListener(speakers, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            boolean onMenuItemActionExpand(MenuItem item) {
+                tracks.collapseActionView()
+                true
+            }
+
+            @Override
+            boolean onMenuItemActionCollapse(MenuItem item) {
+                true
+            }
+        })
+
+        true
+    }
+
+    private static class SimpleArrayAdapter extends ArrayAdapter<String> {
+
+        SimpleArrayAdapter(Context context, List<String> objects) {
+            super(context,android.R.layout.simple_list_item_1,objects)
+        }
+
+    }
+
+
     public void switchFavorite ( MenuItem item ) {
         Toast.makeText(this, "TODO: Added to your sessions", Toast.LENGTH_SHORT).show()
         item.checked = true
+    }
+
+    public void chooseTrack(MenuItem item) {
+
+    }
+
+    public void chooseSpeaker(MenuItem item) {
+
     }
 }
