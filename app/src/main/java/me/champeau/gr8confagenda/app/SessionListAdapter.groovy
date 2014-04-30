@@ -2,14 +2,11 @@ package me.champeau.gr8confagenda.app
 
 import android.content.Context
 import android.graphics.Color
-import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Filter
-import android.widget.Filter.FilterResults
 import android.widget.TextView
 import groovy.transform.CompileStatic
 import me.champeau.gr8confagenda.app.client.Session
@@ -45,7 +42,7 @@ class SessionListAdapter extends ArrayAdapter<Session> {
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             adapter.clear()
-            adapter.addAll((List<Session>)results.values)
+            adapter.addAll((List<Session>) results.values)
             adapter.notifyDataSetChanged()
         }
     }
@@ -53,7 +50,7 @@ class SessionListAdapter extends ArrayAdapter<Session> {
     SessionListAdapter(Context context, int resource, int textViewResourceId, List<Session> objects) {
         super(context, resource, textViewResourceId, objects)
         notifyOnChange = false
-        this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)
+        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)
     }
 
     @Override
@@ -77,6 +74,7 @@ class SessionListAdapter extends ArrayAdapter<Session> {
         def timeElem = (TextView) view.findViewById(R.id.session_list_time)
         String timeText = "${session.slot.startTime}\n${session.slot.endTime}"
         timeElem.setText(timeText)
+
         view
     }
 }
