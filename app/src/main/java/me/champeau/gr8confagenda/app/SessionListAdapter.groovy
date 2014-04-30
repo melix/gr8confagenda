@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.TextView
 import groovy.transform.CompileStatic
+import android.widget.Filter.FilterResults
 import me.champeau.gr8confagenda.app.client.Session
 
 @CompileStatic

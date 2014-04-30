@@ -1,20 +1,12 @@
 package me.champeau.gr8confagenda.app
 
-import android.content.BroadcastReceiver
-import android.content.Context;
+import android.app.Activity
 import android.content.Intent
-import android.content.IntentFilter;
-import android.os.Bundle;
-import android.app.Activity;
+import android.os.Bundle
 import android.support.v4.app.NavUtils
-import android.view.Menu;
 import android.view.MenuItem
-import android.widget.ArrayAdapter
+import android.widget.Toast
 import groovy.transform.CompileStatic
-import me.champeau.gr8confagenda.app.client.AgendaClient
-import me.champeau.gr8confagenda.app.client.Session
-import me.champeau.gr8confagenda.app.client.Speaker;
-
 
 /**
  * An activity representing a single Session detail screen. This
@@ -77,4 +69,7 @@ class SessionDetailActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void switchFavorite(MenuItem item) {
+        Toast.makeText(this, "TODO: Added to your sessions", Toast.LENGTH_SHORT).show()
+    }
 }

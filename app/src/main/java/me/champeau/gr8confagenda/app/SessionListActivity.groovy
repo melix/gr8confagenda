@@ -6,6 +6,8 @@ import android.app.FragmentTransaction
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
+import android.widget.Toast
 import groovy.transform.CompileStatic
 
 /**
@@ -122,5 +124,10 @@ class SessionListActivity extends Activity
     @Override
     void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
 
+    }
+
+    public void switchFavorite ( MenuItem item ) {
+        Toast.makeText(this, "TODO: Added to your sessions", Toast.LENGTH_SHORT).show()
+        item.checked = true
     }
 }
