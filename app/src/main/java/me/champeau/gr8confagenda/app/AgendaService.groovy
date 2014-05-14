@@ -26,8 +26,8 @@ class AgendaService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             if (Application.instance.sessions.empty) {
-                def client = new AgendaClient('http://cfp.gr8conf.org/api')
-                client.fetchAgenda { speakers, sessions ->
+                def client = new AgendaClient('http://cfp.gr8conf.org')
+                client.fetchAgenda(applicationContext) { speakers, sessions ->
                     Application.instance.sessions = (List<Session>) sessions
                     Application.instance.speakers = (List<Speaker>) speakers
                 }

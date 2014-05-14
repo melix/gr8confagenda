@@ -17,6 +17,7 @@ import android.widget.TextView
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper
 import groovy.transform.CompileStatic
 import me.champeau.gr8confagenda.app.client.Session
+import me.champeau.gr8confagenda.app.client.Speaker
 
 /**
  * A fragment representing a single Session detail screen.
@@ -71,11 +72,20 @@ class SessionDetailFragment extends Fragment {
         if (mItem != null) {
             def view = rootView.findViewById(R.id.session_detail)
             def speaker = Application.instance.speakers.find { it.id == mItem.speakerId }
+            if (!speaker) {
+                speaker = new Speaker(
+                        name: 'GR8Conf',
+                        twitter: 'gr8conf',
+                        bio: '',
+                        employer: '',
+                        image: 'https://lh6.googleusercontent.com/-CV91c1R_zCw/AAAAAAAAAAI/AAAAAAAAAI8/CGoEd0oB8Pc/photo.jpg'
+                )
+            }
             ((TextView) view.findViewById(R.id.session_detail_speaker)).setText(speaker.name)
             UrlImageViewHelper.setUrlDrawable((ImageView) view.findViewById(R.id.session_detail_image), speaker.image)
             ((TextView) view.findViewById(R.id.session_detail_title)).setText(mItem.title)
             def body = (TextView) view.findViewById(R.id.session_detail_body)
-            body.setText(Html.fromHtml(mItem.summary))
+            body.setText(Html.fromHtml(mItem.summary?:''))
             ((TextView) view.findViewById(R.id.session_detail_slot)).setText("${mItem.slot.startTime}-${mItem.slot.endTime}")
             def track = (TextView) view.findViewById(R.id.session_detail_track)
             track.setText(mItem.slot.trackName)
