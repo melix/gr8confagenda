@@ -1,6 +1,8 @@
 package me.champeau.gr8confagenda.app.client
 
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
 
@@ -18,7 +20,11 @@ class AgendaClient {
     }
 
     String fetchAgenda() {
-        new URL("$baseApiUrl/api/agenda/1").getText('utf-8')
+        try {
+            return new URL("$baseApiUrl/api/agenda/1").getText('utf-8')
+        } catch (Exception e) {
+            return null
+        }
     }
 
     boolean shouldUpdate(Context context) {
@@ -26,19 +32,28 @@ class AgendaClient {
         Status old = new Status()
         if (statusFile.exists()) {
             statusFile.withObjectInputStream { ObjectInputStream oin ->
-                old = (Status) oin.readObject()
+                try {
+                    old = (Status) oin.readObject()
+                } catch (InvalidClassException e) {
+                    old = null
+                }
             }
         }
-        def json = (Map) new JsonSlurper().parse([:], new URL("$baseApiUrl/api2/status/1"), 'utf-8')
-        Status status = new Status(
-                talks: (String) json.talks,
-                speakers: (String) json.speakers,
-                agenda: (String) json.agenda,
-                favorites: (String) json.favorites
-        )
-        statusFile.withObjectOutputStream { it.writeObject(status) }
+        try {
+            def json = (Map) new JsonSlurper().parse([:], new URL("$baseApiUrl/api2/status/1"), 'utf-8')
+            Status status = new Status(
+                    talks: (String) json.talks,
+                    speakers: (String) json.speakers,
+                    agenda: (String) json.agenda,
+                    favorites: (String) json.favorites
+            )
+            statusFile.withObjectOutputStream { it.writeObject(status) }
 
-        status != old
+            status != old
+        } catch (Exception e) {
+            Log.e("AgendaClient", "Unable to fetch status. Network down?")
+            false
+        }
     }
 
     File fetchAndCacheAgenda(Context context) {
@@ -47,39 +62,46 @@ class AgendaClient {
             return agendaFile
         }
         String agenda = fetchAgenda()
-        agendaFile.write(agenda, 'UTF-8')
-
+        if (agenda) {
+            agendaFile.write(agenda ?: "", 'UTF-8')
+        }
         agendaFile
     }
 
     void fetchAgenda(Context ctx, Closure callback) {
         File agenda = fetchAndCacheAgenda(ctx)
-        def feed = (Map) new JsonSlurper().parse(agenda, 'utf-8')
-        List<Session> sessions = []
-        List<Speaker> speakers = []
-        feed.agendaDays.each { Map day ->
-            day.tracks.each { Map track ->
-                String color = track.color
-                String name = track.name
-                track.agendaItems.collect(sessions) { Map item ->
-                    item.trackColor = color
-                    item.trackName = name
-                    def speaker = toSpeaker((Map) item.speaker)
-                    if (speaker) {
-                        speakers << speaker
-                    }
-                    def session = toSession(item)
-                    session.speakerId = speaker?.id
+        if (agenda.exists()) {
+            def feed = (Map) new JsonSlurper().parse(agenda, 'utf-8')
+            List<Session> sessions = []
+            List<Speaker> speakers = []
+            feed.agendaDays.each { Map day ->
+                day.tracks.each { Map track ->
+                    String color = track.color
+                    String name = track.name
+                    track.agendaItems.collect(sessions) { Map item ->
+                        item.trackColor = color
+                        item.trackName = name
+                        def speaker = toSpeaker((Map) item.speaker)
+                        if (speaker) {
+                            speakers << speaker
+                        }
+                        def session = toSession(item)
+                        session.speakerId = speaker?.id
 
-                    session
+                        session
+                    }
                 }
             }
-        }
-        speakers.each { speaker ->
-            speaker.talks = new ArrayList<Session>(sessions.findAll { it.speakerId == speaker.id })
-        }
+            speakers.each { speaker ->
+                speaker.talks = new ArrayList<Session>(sessions.findAll {
+                    it.speakerId == speaker.id
+                })
+            }
 
-        callback(speakers, sessions.sort { it.slot.startTime} )
+            callback(speakers, sessions.sort { it.slot.startTime })
+        } else {
+            Toast.makeText(ctx, "Unable to fetch agenda. Please check connectivity.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     protected Speaker toSpeaker(Map source) {
