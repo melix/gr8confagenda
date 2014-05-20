@@ -32,6 +32,14 @@ class SessionDetailFragment extends Fragment {
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
+    public static final Speaker DEFAULT_SPEAKER = new Speaker(
+            name: 'GR8Conf',
+            twitter: 'gr8conf',
+            bio: 'GR8Conf is an independent, affordable series of conferences in Denmark and the US. It\'s\n' +
+                    'dedicated to the technologies in the Groovy ecosystem.',
+            employer: 'GR8Conf',
+            image: 'https://lh6.googleusercontent.com/-CV91c1R_zCw/AAAAAAAAAAI/AAAAAAAAAI8/CGoEd0oB8Pc/photo.jpg'
+    )
 
     /**
      * The dummy content this fragment is presenting.
@@ -73,13 +81,7 @@ class SessionDetailFragment extends Fragment {
             def view = rootView.findViewById(R.id.session_detail)
             def speaker = Application.instance.speakers.find { it.id == mItem.speakerId }
             if (!speaker) {
-                speaker = new Speaker(
-                        name: 'GR8Conf',
-                        twitter: 'gr8conf',
-                        bio: '',
-                        employer: '',
-                        image: 'https://lh6.googleusercontent.com/-CV91c1R_zCw/AAAAAAAAAAI/AAAAAAAAAI8/CGoEd0oB8Pc/photo.jpg'
-                )
+                speaker = DEFAULT_SPEAKER
             }
             ((TextView) view.findViewById(R.id.session_detail_speaker)).setText(speaker.name)
             UrlImageViewHelper.setUrlDrawable((ImageView) view.findViewById(R.id.session_detail_image), speaker.image)

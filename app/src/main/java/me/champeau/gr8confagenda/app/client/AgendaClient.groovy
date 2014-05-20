@@ -127,7 +127,7 @@ class AgendaClient {
         def session = new Session(
                 id: id,
                 title: (String) source.title,
-                summary: (String) source.summary,
+                summary: (String) source.summary?:'No detail available for this session',
                 tags: new ArrayList<String>(tags),
                 slot: toSlot((Map) source.slot)
         )
