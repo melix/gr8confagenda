@@ -39,6 +39,8 @@ import groovy.transform.CompileStatic
 class SessionListActivity extends Activity
         implements SessionListFragment.Callbacks, ActionBar.TabListener {
 
+    private final static String SELECTED_TAB = "selectedTab";
+
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -73,7 +75,21 @@ class SessionListActivity extends Activity
         }
 
         populateActionBar()
+    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(SELECTED_TAB, actionBar.selectedTab.position)
+        super.onSaveInstanceState(outState)
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState)
+        if (savedInstanceState?.containsKey(SELECTED_TAB)) {
+            def tabIndex = savedInstanceState.getInt(SELECTED_TAB)
+            actionBar.selectTab(actionBar.getTabAt(tabIndex))
+        }
     }
 
     private void populateActionBar() {

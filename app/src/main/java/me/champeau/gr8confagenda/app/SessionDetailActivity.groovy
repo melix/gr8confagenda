@@ -90,8 +90,9 @@ class SessionDetailActivity extends Activity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, SessionListActivity));
-            return true;
+            //NavUtils.navigateUpTo(this, new Intent(this, SessionListActivity));
+            onBackPressed()
+            return true
         }
         return super.onOptionsItemSelected(item);
     }
