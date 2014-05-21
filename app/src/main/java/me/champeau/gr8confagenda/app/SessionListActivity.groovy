@@ -3,8 +3,10 @@ package me.champeau.gr8confagenda.app
 import android.app.ActionBar
 import android.app.Activity
 import android.app.FragmentTransaction
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.support.v4.view.MenuItemCompat
 import android.util.Log
@@ -41,6 +43,15 @@ class SessionListActivity extends Activity
 
     private final static String SELECTED_TAB = "selectedTab";
 
+    private BroadcastReceiver broadcastReceiver
+
+    private void updateFavoriteIcon() {
+        SessionDetailFragment fragment = (SessionDetailFragment) fragmentManager.findFragmentById(R.id.session_detail_container)
+        if (fragment) {
+            fragment.updateFavoritesIcon()
+        }
+    }
+
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -72,9 +83,27 @@ class SessionListActivity extends Activity
             // 'activated' state when touched.
             sessionListFragment
                     .activateOnItemClick = true
+
+            broadcastReceiver= new BroadcastReceiver() {
+                @Override
+                void onReceive(Context context, Intent intent) {
+                    updateFavoriteIcon()
+                }
+            }
+            def intentFilter = new IntentFilter(AgendaService.UPDATE_FAVORITES_RESPONSE)
+            intentFilter.addCategory(AgendaService.CATEGORY)
+            registerReceiver(broadcastReceiver, intentFilter)
         }
 
         populateActionBar()
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy()
+        if (broadcastReceiver) {
+            unregisterReceiver(broadcastReceiver)
+        }
     }
 
     @Override
