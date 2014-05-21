@@ -226,8 +226,11 @@ class SessionListActivity extends Activity
 
 
     public void switchFavorite ( MenuItem item ) {
-        Toast.makeText(this, "TODO: Added to your sessions", Toast.LENGTH_SHORT).show()
-        item.checked = true
+        SessionDetailFragment fragment = (SessionDetailFragment) fragmentManager.findFragmentById(R.id.session_detail_container)
+        Intent intent = new Intent(this, AgendaService)
+        intent.action = AgendaService.ACTION_FAVORITE
+        intent.putExtra(AgendaService.SESSION_ID, fragment.sessionItem.id)
+        startService(intent)
     }
 
     public void chooseTrack(MenuItem item) {

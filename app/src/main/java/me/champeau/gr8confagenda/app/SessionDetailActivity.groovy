@@ -1,7 +1,10 @@
 package me.champeau.gr8confagenda.app
 
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.support.v4.app.NavUtils
 import android.view.MenuItem
@@ -19,6 +22,19 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class SessionDetailActivity extends Activity {
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        void onReceive(Context context, Intent intent) {
+            updateFavoriteIcon()
+        }
+    }
+
+    private void updateFavoriteIcon() {
+        SessionDetailFragment fragment = (SessionDetailFragment) fragmentManager.findFragmentById(R.id.session_detail_container)
+        if (fragment) {
+            fragment.updateFavoritesIcon()
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +66,18 @@ class SessionDetailActivity extends Activity {
                     .commit();
         }
 
+        def intentFilter = new IntentFilter(AgendaService.UPDATE_FAVORITES_RESPONSE)
+        intentFilter.addCategory(AgendaService.CATEGORY)
+        registerReceiver(broadcastReceiver, intentFilter)
+
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(broadcastReceiver);
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -70,6 +97,10 @@ class SessionDetailActivity extends Activity {
     }
 
     public void switchFavorite(MenuItem item) {
-        Toast.makeText(this, "TODO: Added to your sessions", Toast.LENGTH_SHORT).show()
+        SessionDetailFragment fragment = (SessionDetailFragment) fragmentManager.findFragmentById(R.id.session_detail_container)
+        Intent intent = new Intent(this, AgendaService)
+        intent.action = AgendaService.ACTION_FAVORITE
+        intent.putExtra(AgendaService.SESSION_ID, fragment.sessionItem.id)
+        startService(intent)
     }
 }

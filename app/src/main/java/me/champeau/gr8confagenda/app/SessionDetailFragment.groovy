@@ -6,11 +6,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.ScrollView
 import android.widget.TextView
@@ -41,10 +37,9 @@ class SessionDetailFragment extends Fragment {
             image: 'https://lh6.googleusercontent.com/-CV91c1R_zCw/AAAAAAAAAAI/AAAAAAAAAI8/CGoEd0oB8Pc/photo.jpg'
     )
 
-    /**
-     * The dummy content this fragment is presenting.
-     */
-    private Session mItem;
+    Session sessionItem;
+
+    private MenuItem favoritesMenu
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -62,13 +57,13 @@ class SessionDetailFragment extends Fragment {
 
     private void fetchItem(Bundle bundle) {
         if (bundle?.containsKey(ARG_ITEM_ID)) {
-            mItem = Application.instance.sessions.find { it.id == bundle.get(ARG_ITEM_ID) }
+            sessionItem = Application.instance.sessions.find { it.id == bundle.get(ARG_ITEM_ID) }
         }
     }
 
     @Override
     void onSaveInstanceState(Bundle outState) {
-        outState.putLong(ARG_ITEM_ID, mItem.id)
+        outState.putLong(ARG_ITEM_ID, sessionItem.id)
     }
 
     @Override
@@ -77,26 +72,26 @@ class SessionDetailFragment extends Fragment {
         fetchItem(savedInstanceState)
         ScrollView rootView = (ScrollView) inflater.inflate(R.layout.fragment_session_detail, container, false);
 
-        if (mItem != null) {
+        if (sessionItem != null) {
             def view = rootView.findViewById(R.id.session_detail)
-            def speaker = Application.instance.speakers.find { it.id == mItem.speakerId }
+            def speaker = Application.instance.speakers.find { it.id == sessionItem.speakerId }
             if (!speaker) {
                 speaker = DEFAULT_SPEAKER
             }
             ((TextView) view.findViewById(R.id.session_detail_speaker)).setText(speaker.name)
             UrlImageViewHelper.setUrlDrawable((ImageView) view.findViewById(R.id.session_detail_image), speaker.image)
-            ((TextView) view.findViewById(R.id.session_detail_title)).setText(mItem.title)
+            ((TextView) view.findViewById(R.id.session_detail_title)).setText(sessionItem.title)
             def body = (TextView) view.findViewById(R.id.session_detail_body)
-            body.setText(Html.fromHtml(mItem.summary?:''))
-            ((TextView) view.findViewById(R.id.session_detail_slot)).setText("${mItem.slot.startTime}-${mItem.slot.endTime}")
+            body.setText(Html.fromHtml(sessionItem.summary ?: ''))
+            ((TextView) view.findViewById(R.id.session_detail_slot)).setText("${sessionItem.slot.startTime}-${sessionItem.slot.endTime}")
             def track = (TextView) view.findViewById(R.id.session_detail_track)
-            track.setText(mItem.slot.trackName)
-            track.setBackgroundColor(Color.parseColor(mItem.slot.trackColor))
+            track.setText(sessionItem.slot.trackName)
+            track.setBackgroundColor(Color.parseColor(sessionItem.slot.trackColor))
             ((TextView) view.findViewById(R.id.session_detail_speaker_detail)).setText(Html.fromHtml(speaker.bio))
             def twitter = (TextView) view.findViewById(R.id.session_detail_twitter)
             twitter.setText("@${speaker.twitter}")
             twitter.clickable = true
-            twitter.onClickListener= new View.OnClickListener() {
+            twitter.onClickListener = new View.OnClickListener() {
                 @Override
                 void onClick(View v) {
                     def intent = new Intent(Intent.ACTION_VIEW)
@@ -115,5 +110,15 @@ class SessionDetailFragment extends Fragment {
     @Override
     void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.session_detail_menu, menu)
+        favoritesMenu = menu.findItem(R.id.action_add_to_favorites)
+        updateFavoritesIcon()
     }
+
+    public void updateFavoritesIcon() {
+        if (sessionItem) {
+            boolean favorite = Application.instance.favorites.contains(sessionItem.id)
+            favoritesMenu.setIcon(favorite ? R.drawable.ic_action_important : R.drawable.ic_action_not_important)
+        }
+    }
+
 }

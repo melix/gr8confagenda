@@ -10,4 +10,5 @@ import me.champeau.gr8confagenda.app.client.Speaker;
 class Application {
     List<Session> sessions = []
     List<Speaker> speakers = []
+    Set<Long> favorites = []
 }
