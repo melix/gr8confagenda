@@ -93,6 +93,10 @@ class SessionListActivity extends Activity
             def intentFilter = new IntentFilter(AgendaService.UPDATE_FAVORITES_RESPONSE)
             intentFilter.addCategory(AgendaService.CATEGORY)
             registerReceiver(broadcastReceiver, intentFilter)
+
+            if (Application.instance.sessions && savedInstanceState==null) {
+                onItemSelected(Application.instance.sessions[0].id)
+            }
         }
 
         populateActionBar()
