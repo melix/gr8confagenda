@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Filter
+import android.widget.ImageView
 import android.widget.TextView
 import groovy.transform.CompileStatic
 import android.widget.Filter.FilterResults
@@ -88,6 +89,9 @@ class SessionListAdapter extends ArrayAdapter<Session> {
         def timeElem = (TextView) view.findViewById(R.id.session_list_time)
         String timeText = "${session.slot.startTime}\n${session.slot.endTime}"
         timeElem.setText(timeText)
+
+        def starElem = (ImageView) view.findViewById(R.id.starred_session)
+        starElem.setVisibility(Application.instance.favorites.contains(session.id)?ImageView.VISIBLE:ImageView.GONE)
 
         view
     }

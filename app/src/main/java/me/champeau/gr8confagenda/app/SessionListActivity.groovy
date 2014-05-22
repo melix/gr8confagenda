@@ -50,6 +50,8 @@ class SessionListActivity extends Activity
         if (fragment) {
             fragment.updateFavoritesIcon()
         }
+
+        sessionListAdapter().notifyDataSetChanged()
     }
 
     /**
@@ -123,6 +125,13 @@ class SessionListActivity extends Activity
             def tabIndex = savedInstanceState.getInt(SELECTED_TAB)
             actionBar.selectTab(actionBar.getTabAt(tabIndex))
         }
+    }
+
+    @Override
+    protected void onResume() {
+        // done only to redraw stars, there must be a better way to do this
+        sessionListAdapter().notifyDataSetChanged()
+        super.onResume()
     }
 
     private void populateActionBar() {
