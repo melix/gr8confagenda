@@ -64,13 +64,20 @@ class AgendaService extends IntentService {
                 favorites.remove(sid)
             }
         }
-        def edit = prefs().edit()
-        edit.putStringSet("favorites", favorites.collect { it.toString() } as Set)
-        edit.commit()
+        edit {
+            putStringSet("favorites", favorites.collect { it.toString() } as Set)
+        }
         def response = new Intent()
         response.setAction(UPDATE_FAVORITES_RESPONSE)
         response.addCategory(CATEGORY)
         sendBroadcast(response)
+    }
+
+    private void edit(@DelegatesTo(SharedPreferences.Editor) Closure cl) {
+        def edit = prefs().edit()
+        cl.delegate = edit
+        cl()
+        edit.commit()
     }
 
     private void doFetchAgenda() {
