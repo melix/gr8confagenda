@@ -10,8 +10,8 @@ import groovy.transform.CompileStatic
 class AgendaClient {
     private final String AGENDA_FILE = "agenda.json"
     private final String STATUS_FILE = "status.bin"
-
-    private long generatedId = 1_000_000
+    public static final long GENERATED_ID_BASE = 1_000_000_000
+    private long generatedId = GENERATED_ID_BASE
 
     private final String baseApiUrl
 
@@ -147,7 +147,7 @@ class AgendaClient {
 
     private Long makeId(String str) {
         if (str) {
-            str as Long
+            return (str as Long)
         }
         generatedId++
     }

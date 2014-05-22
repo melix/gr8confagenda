@@ -12,6 +12,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper
 import groovy.transform.CompileStatic
+import me.champeau.gr8confagenda.app.client.AgendaClient
 import me.champeau.gr8confagenda.app.client.Session
 import me.champeau.gr8confagenda.app.client.Speaker
 
@@ -118,6 +119,7 @@ class SessionDetailFragment extends Fragment {
         if (sessionItem) {
             boolean favorite = Application.instance.favorites.contains(sessionItem.id)
             favoritesMenu.setIcon(favorite ? R.drawable.ic_action_important : R.drawable.ic_action_not_important)
+            favoritesMenu.setVisible(sessionItem.id<AgendaClient.GENERATED_ID_BASE)
         }
     }
 
