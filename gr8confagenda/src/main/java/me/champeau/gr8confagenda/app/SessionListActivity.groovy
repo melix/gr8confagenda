@@ -8,17 +8,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
+import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.MenuItemCompat
-import android.util.Log
+import android.support.v4.view.ViewPager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.TextView
-import android.widget.Toast
 import groovy.transform.CompileStatic
 
 /**
@@ -38,7 +38,7 @@ import groovy.transform.CompileStatic
  * to listen for item selections.
  */
 @CompileStatic
-class SessionListActivity extends Activity
+class SessionListActivity extends FragmentActivity
         implements SessionListFragment.Callbacks, ActionBar.TabListener {
 
     private final static String SELECTED_TAB = "selectedTab";
@@ -46,12 +46,12 @@ class SessionListActivity extends Activity
     private BroadcastReceiver broadcastReceiver
 
     private void updateFavoriteIcon() {
-        SessionDetailFragment fragment = (SessionDetailFragment) fragmentManager.findFragmentById(R.id.session_detail_container)
+        SessionDetailFragment fragment = (SessionDetailFragment) supportFragmentManager.findFragmentById(R.id.session_detail_container)
         if (fragment) {
             fragment.updateFavoritesIcon()
         }
 
-        sessionListAdapter().notifyDataSetChanged()
+        sessionListAdapter.notifyDataSetChanged()
     }
 
     /**
@@ -60,20 +60,22 @@ class SessionListActivity extends Activity
      */
     private boolean mTwoPane;
 
-    protected SessionListAdapter sessionListAdapter() {
-        def sessionListFragment = (SessionListFragment) fragmentManager
-                .findFragmentById(R.id.session_list)
-        (SessionListAdapter) sessionListFragment.listAdapter
+    /**
+     * The view pager, for swiping between tabs
+     */
+    private ViewPager mPager
+
+    SessionListAdapter sessionListAdapter
+
+    public boolean isTwoPane() {
+        mTwoPane
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_session_list)
-
-
-        def sessionListFragment = (SessionListFragment) fragmentManager
-                .findFragmentById(R.id.session_list)
+        sessionListAdapter = new SessionListAdapter(this)
         if (findViewById(R.id.session_detail_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-large and
@@ -81,12 +83,7 @@ class SessionListActivity extends Activity
             // activity should be in two-pane mode.
             mTwoPane = true;
 
-            // In two-pane mode, list items should be given the
-            // 'activated' state when touched.
-            sessionListFragment
-                    .activateOnItemClick = true
-
-            broadcastReceiver= new BroadcastReceiver() {
+            broadcastReceiver = new BroadcastReceiver() {
                 @Override
                 void onReceive(Context context, Intent intent) {
                     updateFavoriteIcon()
@@ -96,9 +93,24 @@ class SessionListActivity extends Activity
             intentFilter.addCategory(AgendaService.CATEGORY)
             registerReceiver(broadcastReceiver, intentFilter)
 
-            if (Application.instance.sessions && savedInstanceState==null) {
+            if (Application.instance.sessions && savedInstanceState == null) {
                 onItemSelected(Application.instance.sessions[0].id)
             }
+
+            SessionListFragment sessionListFragment = (SessionListFragment) supportFragmentManager.findFragmentById(R.id.session_list)
+            sessionListFragment.listAdapter = sessionListAdapter
+
+        } else {
+            mPager = (ViewPager) findViewById(R.id.pager)
+            mPager.onPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageSelected(int position) {
+                    // When swiping between pages, select the
+                    // corresponding tab.
+                    getActionBar().setSelectedNavigationItem(position);
+                }
+            }
+            mPager.adapter = new SessionListFragmentAdapter(this)
         }
 
         populateActionBar()
@@ -130,7 +142,7 @@ class SessionListActivity extends Activity
     @Override
     protected void onResume() {
         // done only to redraw stars, there must be a better way to do this
-        sessionListAdapter().notifyDataSetChanged()
+        sessionListAdapter.notifyDataSetChanged()
         super.onResume()
     }
 
@@ -156,7 +168,7 @@ class SessionListActivity extends Activity
             arguments.putLong(SessionDetailFragment.ARG_ITEM_ID, id);
             SessionDetailFragment fragment = new SessionDetailFragment();
             fragment.arguments = arguments
-            fragmentManager.beginTransaction()
+            supportFragmentManager.beginTransaction()
                     .replace(R.id.session_detail_container, fragment)
                     .commit();
 
@@ -171,16 +183,14 @@ class SessionListActivity extends Activity
 
     protected void doFilter() {
         def tab = actionBar.selectedTab
-        sessionListAdapter().filter.filter("2014-06-0${2 + tab.position}")
+        sessionListAdapter.filter.filter("2014-06-0${2 + tab.position}")
 
     }
 
     @Override
     void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+        mPager?.currentItem = tab.position
         doFilter()
-        def sessionListFragment = (SessionListFragment) fragmentManager
-                .findFragmentById(R.id.session_list)
-        sessionListFragment.listView.clearChoices()
     }
 
     @Override
@@ -201,8 +211,7 @@ class SessionListActivity extends Activity
 
         Set<String> trackNames = new TreeSet<String>()
         Set<String> speakerNames = new TreeSet<String>()
-        [trackNames,speakerNames]*.add('')
-        def sessionListAdapter = sessionListAdapter()
+        [trackNames, speakerNames]*.add('')
 
         Application.instance.sessions.collect(trackNames) { item ->
             item.slot.trackName
@@ -220,7 +229,7 @@ class SessionListActivity extends Activity
         trackView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((SessionListAdapter.SessionFilter)sessionListAdapter.filter).trackName = trackAdapter.getItem(position)
+                ((SessionListAdapter.SessionFilter) getSessionListAdapter().filter).trackName = trackAdapter.getItem(position)
                 doFilter()
             }
 
@@ -233,7 +242,7 @@ class SessionListActivity extends Activity
             @Override
             void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 def item = speakerAdapter.getItem(position)
-                ((SessionListAdapter.SessionFilter)sessionListAdapter.filter).speakerId =
+                ((SessionListAdapter.SessionFilter) getSessionListAdapter().filter).speakerId =
                         Application.instance.speakers.find { it.name == item }?.id
                 doFilter()
             }
@@ -277,14 +286,43 @@ class SessionListActivity extends Activity
     private static class SimpleArrayAdapter extends ArrayAdapter<String> {
 
         SimpleArrayAdapter(Context context, List<String> objects) {
-            super(context,android.R.layout.simple_list_item_1,objects)
+            super(context, android.R.layout.simple_list_item_1, objects)
         }
 
     }
 
+    private static class SessionListFragmentAdapter extends FragmentPagerAdapter {
+        final SessionListActivity activity
+        final SessionListFragment[] items = new SessionListFragment[3]
 
-    public void switchFavorite ( MenuItem item ) {
-        SessionDetailFragment fragment = (SessionDetailFragment) fragmentManager.findFragmentById(R.id.session_detail_container)
+        SessionListFragmentAdapter(SessionListActivity activity) {
+            super(activity.supportFragmentManager)
+            this.activity = activity
+        }
+
+        @Override
+        Fragment getItem(int position) {
+            if (items[position]==null) {
+                def fragment = new SessionListFragment()
+                fragment.listAdapter = activity.sessionListAdapter
+                fragment.onAttach(activity)
+                if (activity.isTwoPane()) {
+                    fragment.activateOnItemClick = true
+                }
+                items[position] = fragment
+            }
+            items[position]
+        }
+
+        @Override
+        int getCount() {
+            3
+        }
+    }
+
+
+    public void switchFavorite(MenuItem item) {
+        SessionDetailFragment fragment = (SessionDetailFragment) supportFragmentManager.findFragmentById(R.id.session_detail_container)
         Intent intent = new Intent(this, AgendaService)
         intent.action = AgendaService.ACTION_FAVORITE
         intent.putExtra(AgendaService.SESSION_ID, fragment.sessionItem.id)

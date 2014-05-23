@@ -1,10 +1,10 @@
 package me.champeau.gr8confagenda.app
 
-import android.app.Fragment
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.text.Html
 import android.view.*
 import android.widget.ImageView
@@ -52,7 +52,7 @@ class SessionDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
-        hasOptionsMenu = true
+        setHasOptionsMenu(true)
         fetchItem(arguments)
     }
 

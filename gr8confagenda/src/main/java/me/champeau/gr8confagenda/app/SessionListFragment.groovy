@@ -1,15 +1,11 @@
-package me.champeau.gr8confagenda.app;
+package me.champeau.gr8confagenda.app
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.app.ListFragment;
+import android.app.Activity
+import android.os.Bundle
+import android.support.v4.app.ListFragment
 import android.view.View
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView
-import android.widget.TextView
 import groovy.transform.CompileStatic
-import me.champeau.gr8confagenda.app.client.Session;
 
 /**
  * A list fragment representing a list of Sessions. This fragment
@@ -52,22 +48,11 @@ class SessionListFragment extends ListFragment {
         public void onItemSelected(Long id);
     }
 
-
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public SessionListFragment() {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        listAdapter = new SessionListAdapter(
-                activity,
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1, [])
     }
 
     @Override
@@ -99,7 +84,7 @@ class SessionListFragment extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks?.onItemSelected(((SessionListActivity)activity).sessionListAdapter().getItem(position).id)
+        mCallbacks?.onItemSelected(((SessionListActivity) activity).sessionListAdapter.getItem(position).id)
     }
 
     @Override

@@ -59,8 +59,9 @@ class SessionListAdapter extends ArrayAdapter<Session> {
         }
     }
 
-    SessionListAdapter(Context context, int resource, int textViewResourceId, List<Session> objects) {
-        super(context, resource, textViewResourceId, objects)
+    SessionListAdapter(Context context) {
+        super(context,android.R.layout.simple_list_item_activated_1,
+                android.R.id.text1, [])
         notifyOnChange = false
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)
     }

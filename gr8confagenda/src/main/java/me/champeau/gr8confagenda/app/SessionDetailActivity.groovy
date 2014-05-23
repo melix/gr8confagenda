@@ -1,14 +1,12 @@
 package me.champeau.gr8confagenda.app
 
-import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.support.v4.app.NavUtils
+import android.support.v4.app.FragmentActivity
 import android.view.MenuItem
-import android.widget.Toast
 import groovy.transform.CompileStatic
 
 /**
@@ -21,7 +19,7 @@ import groovy.transform.CompileStatic
  * more than a {@link SessionDetailFragment}.
  */
 @CompileStatic
-class SessionDetailActivity extends Activity {
+class SessionDetailActivity extends FragmentActivity {
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         void onReceive(Context context, Intent intent) {
@@ -30,7 +28,7 @@ class SessionDetailActivity extends Activity {
     }
 
     private void updateFavoriteIcon() {
-        SessionDetailFragment fragment = (SessionDetailFragment) fragmentManager.findFragmentById(R.id.session_detail_container)
+        SessionDetailFragment fragment = (SessionDetailFragment) supportFragmentManager.findFragmentById(R.id.session_detail_container)
         if (fragment) {
             fragment.updateFavoritesIcon()
         }
@@ -61,7 +59,7 @@ class SessionDetailActivity extends Activity {
                     intent.getLongExtra(SessionDetailFragment.ARG_ITEM_ID, 0));
             SessionDetailFragment fragment = new SessionDetailFragment();
             fragment.arguments = arguments
-            fragmentManager.beginTransaction()
+            supportFragmentManager.beginTransaction()
                     .add(R.id.session_detail_container, fragment)
                     .commit();
         }
@@ -98,7 +96,7 @@ class SessionDetailActivity extends Activity {
     }
 
     public void switchFavorite(MenuItem item) {
-        SessionDetailFragment fragment = (SessionDetailFragment) fragmentManager.findFragmentById(R.id.session_detail_container)
+        SessionDetailFragment fragment = (SessionDetailFragment) supportFragmentManager.findFragmentById(R.id.session_detail_container)
         Intent intent = new Intent(this, AgendaService)
         intent.action = AgendaService.ACTION_FAVORITE
         intent.putExtra(AgendaService.SESSION_ID, fragment.sessionItem.id)
