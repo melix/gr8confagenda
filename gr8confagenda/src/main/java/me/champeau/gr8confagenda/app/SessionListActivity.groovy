@@ -110,7 +110,7 @@ class SessionListActivity extends FragmentActivity
                     getActionBar().setSelectedNavigationItem(position);
                 }
             }
-            mPager.adapter = new SessionListFragmentAdapter(this)
+            mPager.adapter = new SessionListFragmentAdapter()
         }
 
         populateActionBar()
@@ -291,22 +291,20 @@ class SessionListActivity extends FragmentActivity
 
     }
 
-    private static class SessionListFragmentAdapter extends FragmentPagerAdapter {
-        final SessionListActivity activity
+    private class SessionListFragmentAdapter extends FragmentPagerAdapter {
         final SessionListFragment[] items = new SessionListFragment[3]
 
-        SessionListFragmentAdapter(SessionListActivity activity) {
-            super(activity.supportFragmentManager)
-            this.activity = activity
+        SessionListFragmentAdapter() {
+            super(getSupportFragmentManager())
         }
 
         @Override
         Fragment getItem(int position) {
             if (items[position]==null) {
                 def fragment = new SessionListFragment()
-                fragment.listAdapter = activity.sessionListAdapter
-                fragment.onAttach(activity)
-                if (activity.isTwoPane()) {
+                fragment.listAdapter = sessionListAdapter
+                fragment.onAttach(SessionListActivity.this)
+                if (isTwoPane()) {
                     fragment.activateOnItemClick = true
                 }
                 items[position] = fragment
