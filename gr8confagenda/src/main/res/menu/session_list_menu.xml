@@ -14,4 +14,9 @@
         android:onClick="chooseSpeaker"
         android:showAsAction="ifRoom|collapseActionView"
         android:actionLayout="@layout/speaker_list"/>
+    <item android:id="@+id/action_refresh_agenda"
+        android:title="@string/action_refresh_agenda"
+        android:icon="@drawable/ic_action_refresh"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:onClick="refreshAgenda"/>
 </menu>

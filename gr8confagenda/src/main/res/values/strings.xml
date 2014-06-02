@@ -10,5 +10,6 @@
     <string name="action_track">Select track</string>
     <string name="action_speaker">Select speaker</string>
     <string name="favorites_list">Favorites</string>
+    <string name="action_refresh_agenda">Refresh agenda</string>
 
 </resources>

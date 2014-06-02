@@ -19,6 +19,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import groovy.transform.CompileStatic
 
 /**
@@ -83,16 +84,6 @@ class SessionListActivity extends FragmentActivity
             // activity should be in two-pane mode.
             mTwoPane = true;
 
-            broadcastReceiver = new BroadcastReceiver() {
-                @Override
-                void onReceive(Context context, Intent intent) {
-                    updateFavoriteIcon()
-                }
-            }
-            def intentFilter = new IntentFilter(AgendaService.UPDATE_FAVORITES_RESPONSE)
-            intentFilter.addCategory(AgendaService.CATEGORY)
-            registerReceiver(broadcastReceiver, intentFilter)
-
             if (Application.instance.sessions && savedInstanceState == null) {
                 onItemSelected(Application.instance.sessions[0].id)
             }
@@ -112,6 +103,22 @@ class SessionListActivity extends FragmentActivity
             }
             mPager.adapter = new SessionListFragmentAdapter()
         }
+
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            void onReceive(Context context, Intent intent) {
+                if (intent.action==AgendaService.UPDATE_FAVORITES_RESPONSE) {
+                    updateFavoriteIcon()
+                } else {
+                    doFilter()
+                }
+            }
+        }
+        def intentFilter = new IntentFilter()
+        intentFilter.addAction(AgendaService.UPDATE_FAVORITES_RESPONSE)
+        intentFilter.addAction(AgendaService.SESSION_LIST_RESPONSE)
+        intentFilter.addCategory(AgendaService.CATEGORY)
+        registerReceiver(broadcastReceiver, intentFilter)
 
         populateActionBar()
     }
@@ -324,6 +331,12 @@ class SessionListActivity extends FragmentActivity
         Intent intent = new Intent(this, AgendaService)
         intent.action = AgendaService.ACTION_FAVORITE
         intent.putExtra(AgendaService.SESSION_ID, fragment.sessionItem.id)
+        startService(intent)
+    }
+
+    public void refreshAgenda(MenuItem item) {
+        Toast.makeText(this, "Refreshing agenda", Toast.LENGTH_SHORT).show()
+        Intent intent = new Intent(this, AgendaService)
         startService(intent)
     }
 

@@ -81,17 +81,15 @@ class AgendaService extends IntentService {
     }
 
     private void doFetchAgenda() {
-        if (Application.instance.sessions.empty) {
-            def client = new AgendaClient('http://cfp.gr8conf.org')
-            client.fetchAgenda(applicationContext) { speakers, sessions ->
-                Application.instance.sessions = (List<Session>) sessions
-                Application.instance.speakers = (List<Speaker>) speakers
-            }
-            SharedPreferences sharedPref = prefs()
-            Application.instance.favorites = sharedPref.getStringSet("favorites", new LinkedHashSet<String>()).collect {
-                it.toLong()
-            } as Set
+        def client = new AgendaClient('http://cfp.gr8conf.org')
+        client.fetchAgenda(applicationContext) { speakers, sessions ->
+            Application.instance.sessions = (List<Session>) sessions
+            Application.instance.speakers = (List<Speaker>) speakers
         }
+        SharedPreferences sharedPref = prefs()
+        Application.instance.favorites = sharedPref.getStringSet("favorites", new LinkedHashSet<String>()).collect {
+            it.toLong()
+        } as Set
         def response = new Intent()
         response.setAction(SESSION_LIST_RESPONSE)
         response.addCategory(CATEGORY)
