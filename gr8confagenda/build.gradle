@@ -55,8 +55,8 @@ repositories {
 
 dependencies {
     compile 'com.android.support:support-v4:19.1.0'
-    compile 'org.codehaus.groovy:groovy:2.4.0-droid-SNAPSHOT'
-    compile 'org.codehaus.groovy:groovy-json:2.4.0-droid-SNAPSHOT'
+    compile 'org.codehaus.groovy:groovy:2.4.0-grooid-SNAPSHOT'
+    compile 'org.codehaus.groovy:groovy-json:2.4.0-grooid-SNAPSHOT'
     compile 'com.koushikdutta.urlimageviewhelper:urlimageviewhelper:1.0.4'
 }
 
