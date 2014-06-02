@@ -271,6 +271,9 @@ class SessionListActivity extends FragmentActivity
 
             @Override
             boolean onMenuItemActionCollapse(MenuItem item) {
+                trackView.adapter = trackAdapter // clears selection (ugly)
+                ((SessionListAdapter.SessionFilter) sessionListAdapter.filter).trackName=null
+                doFilter()
                 true
             }
         })
@@ -283,6 +286,9 @@ class SessionListActivity extends FragmentActivity
 
             @Override
             boolean onMenuItemActionCollapse(MenuItem item) {
+                speakersView.adapter = speakerAdapter // clears selection (ugly)
+                ((SessionListAdapter.SessionFilter) sessionListAdapter.filter).speakerId=null
+                doFilter()
                 true
             }
         })
