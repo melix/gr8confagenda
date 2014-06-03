@@ -31,7 +31,7 @@ android {
 
     buildTypes {
         debug {
-            runProguard true
+            runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         release {
@@ -55,8 +55,10 @@ repositories {
 
 dependencies {
     compile 'com.android.support:support-v4:19.1.0'
-    compile 'org.codehaus.groovy:groovy:2.4.0-grooid-SNAPSHOT'
-    compile 'org.codehaus.groovy:groovy-json:2.4.0-grooid-SNAPSHOT'
+    compile 'org.codehaus.groovy:groovy:2.4.0-SNAPSHOT:grooid'
+    compile ('org.codehaus.groovy:groovy-json:2.4.0-SNAPSHOT') {
+        transitive = false
+    }
     compile 'com.koushikdutta.urlimageviewhelper:urlimageviewhelper:1.0.4'
 }
 
