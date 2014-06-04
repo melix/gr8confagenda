@@ -98,7 +98,7 @@ class AgendaClient {
                 })
             }
 
-            callback(speakers, sessions.sort { it.slot.startTime })
+            callback(speakers, sessions.sort { it.slot.startTime }.unique { it.id })
         } else {
             Toast.makeText(ctx, "Unable to fetch agenda. Please check connectivity.", Toast.LENGTH_SHORT).show()
         }
