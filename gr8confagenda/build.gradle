@@ -1,9 +1,11 @@
 buildscript {
     repositories {
+        mavenLocal()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.0'
+        classpath 'com.android.tools.build:gradle:0.11.+'
+        classpath 'me.champeau.gradle:gradle-groovy-android-plugin:0.2'
     }
 }
 
@@ -11,7 +13,7 @@ apply plugin: 'android'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    buildToolsVersion "19.1.0"
 
     defaultConfig {
         minSdkVersion 15
@@ -47,9 +49,12 @@ android {
         exclude 'META-INF/groovy-release-info.properties'
     }
 }
+apply plugin: 'groovy-android'
 
 repositories {
-    mavenLocal()
+    maven {
+        url='https://oss.jfrog.org/oss-snapshot-local/'
+    }
     jcenter()
 }
 
@@ -60,21 +65,4 @@ dependencies {
         transitive = false
     }
     compile 'com.koushikdutta.urlimageviewhelper:urlimageviewhelper:1.0.4'
-}
-
-android.applicationVariants.all {
-    task "groovy${name}Compile"(type: GroovyCompile) {
-        source = javaCompile.source + fileTree('src/main/java').include('**/*.groovy')
-        destinationDir = javaCompile.destinationDir
-        classpath = javaCompile.classpath
-        groovyClasspath = classpath
-        sourceCompatibility = '1.6'
-        targetCompatibility = '1.6'
-        doFirst {
-            def runtimeJars = plugins.findPlugin(com.android.build.gradle.AppPlugin).runtimeJars
-            classpath = files(runtimeJars) + classpath
-        }
-    }
-    javaCompile.dependsOn("groovy${name}Compile")
-    javaCompile.enabled = false
 }
