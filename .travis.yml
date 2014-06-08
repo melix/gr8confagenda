@@ -1,0 +1,9 @@
+script: ./gradlew -s clean assembleDebug
+language: android
+android:
+  components:
+    - build-tools-19.1.0
+    - android-19
+    - sysimg-19
+    - extra-android-support
+

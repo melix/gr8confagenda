@@ -1,6 +1,8 @@
 GR8Conf Europe Agenda Application
 ---------------------------------
 
+[![Build Status](https://travis-ci.org/melix/gr8confagenda.svg?branch=master)](https://travis-ci.org/melix/gr8confagenda)
+
 This is the source code for the GR8Conf agenda application as found on Google Play Store, and demonstrated during GR8Conf Europe 2014.
 
 This application is fully written in [Groovy](http://groovy.codehaus.org).
