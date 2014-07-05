@@ -156,7 +156,6 @@ class SessionListActivity extends FragmentActivity
     private void populateActionBar() {
         def bar = getActionBar()
         bar.navigationMode = ActionBar.NAVIGATION_MODE_TABS
-        bar.addTab bar.newTab().setText('University day').setTabListener(this)
         bar.addTab bar.newTab().setText('Conference day 1').setTabListener(this)
         bar.addTab bar.newTab().setText('Conference day 2').setTabListener(this)
     }
@@ -190,7 +189,7 @@ class SessionListActivity extends FragmentActivity
 
     protected void doFilter() {
         def tab = actionBar.selectedTab
-        sessionListAdapter.filter.filter("2014-06-0${2 + tab.position}")
+        sessionListAdapter.filter.filter("2014-07-${28 + tab.position}")
 
     }
 

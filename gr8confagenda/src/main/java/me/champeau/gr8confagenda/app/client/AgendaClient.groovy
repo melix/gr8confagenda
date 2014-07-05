@@ -10,6 +10,8 @@ import groovy.transform.CompileStatic
 class AgendaClient {
     private final String AGENDA_FILE = "agenda.json"
     private final String STATUS_FILE = "status.bin"
+    private final int CONFERENCE_ID = 2;
+
     public static final long GENERATED_ID_BASE = 1_000_000_000
     private long generatedId = GENERATED_ID_BASE
 
@@ -21,7 +23,7 @@ class AgendaClient {
 
     String fetchAgenda() {
         try {
-            return new URL("$baseApiUrl/api/agenda/1").getText('utf-8')
+            return new URL("$baseApiUrl/api/agenda/$CONFERENCE_ID").getText('utf-8')
         } catch (Exception e) {
             return null
         }
@@ -40,7 +42,7 @@ class AgendaClient {
             }
         }
         try {
-            def json = (Map) new JsonSlurper().parse([:], new URL("$baseApiUrl/api2/status/1"), 'utf-8')
+            def json = (Map) new JsonSlurper().parse([:], new URL("$baseApiUrl/api2/status/$CONFERENCE_ID"), 'utf-8')
             Status status = new Status(
                     talks: (String) json.talks,
                     speakers: (String) json.speakers,

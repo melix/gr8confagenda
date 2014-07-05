@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.11.+'
-        classpath 'me.champeau.gradle:gradle-groovy-android-plugin:0.2'
+        classpath 'me.champeau.gradle:gradle-groovy-android-plugin:0.2.1'
     }
 }
 
@@ -49,19 +49,16 @@ android {
         exclude 'META-INF/groovy-release-info.properties'
     }
 }
-apply plugin: 'groovy-android'
+apply plugin: 'me.champeau.gradle.groovy-android'
 
 repositories {
-    maven {
-        url='https://oss.jfrog.org/oss-snapshot-local/'
-    }
     jcenter()
 }
 
 dependencies {
     compile 'com.android.support:support-v4:19.1.0'
-    compile 'org.codehaus.groovy:groovy:2.4.0-SNAPSHOT:grooid'
-    compile ('org.codehaus.groovy:groovy-json:2.4.0-SNAPSHOT') {
+    compile 'org.codehaus.groovy:groovy:2.4.0-beta-1:grooid'
+    compile ('org.codehaus.groovy:groovy-json:2.4.0-beta-1') {
         transitive = false
     }
     compile 'com.koushikdutta.urlimageviewhelper:urlimageviewhelper:1.0.4'
