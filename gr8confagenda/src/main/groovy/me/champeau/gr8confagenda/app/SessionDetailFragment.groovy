@@ -97,7 +97,7 @@ class SessionDetailFragment extends Fragment {
                 void onClick(View v) {
                     def intent = new Intent(Intent.ACTION_VIEW)
                     intent.setData(Uri.parse("https://twitter.com/${speaker.twitter}"))
-                    activity.startActivity(intent)
+                    getActivity().startActivity(intent)
                 }
             }
         }
