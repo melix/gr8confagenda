@@ -28,7 +28,7 @@ class SessionDetailFragment extends Fragment {
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
-    public static final String ARG_ITEM_ID = "item_id";
+    private static final String ARG_ITEM_ID = "item_id"
     public static final Speaker DEFAULT_SPEAKER = new Speaker(
             name: 'GR8Conf',
             twitter: 'gr8conf',
@@ -41,6 +41,14 @@ class SessionDetailFragment extends Fragment {
     Session sessionItem;
 
     private MenuItem favoritesMenu
+
+    public static SessionDetailFragment newInstance(long id) {
+        def fragment = new SessionDetailFragment()
+        Bundle args = new Bundle()
+        args.putLong(ARG_ITEM_ID, id)
+        fragment.arguments = args
+        fragment
+    }
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
