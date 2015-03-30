@@ -170,20 +170,15 @@ class SessionListActivity extends FragmentActivity
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
             // fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putLong(SessionDetailFragment.ARG_ITEM_ID, id);
-            SessionDetailFragment fragment = new SessionDetailFragment();
-            fragment.arguments = arguments
+            def fragment = SessionDetailFragment.newInstance(id)
             supportFragmentManager.beginTransaction()
                     .replace(R.id.session_detail_container, fragment)
-                    .commit();
+                    .commit()
 
         } else {
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
-            Intent detailIntent = new Intent(this, SessionDetailActivity);
-            detailIntent.putExtra(SessionDetailFragment.ARG_ITEM_ID, id);
-            startActivity(detailIntent);
+            SessionDetailActivity.start(this, id)
         }
     }
 

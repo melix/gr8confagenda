@@ -20,6 +20,15 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class SessionDetailActivity extends FragmentActivity {
+
+    private static final String EXTRA_ITEM_ID = "item_id"
+
+    public static void start(Context context, long id) {
+        Intent detailIntent = new Intent(context, SessionDetailActivity)
+        detailIntent.putExtra(EXTRA_ITEM_ID, id)
+        context.startActivity(detailIntent)
+    }
+
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         void onReceive(Context context, Intent intent) {
@@ -54,14 +63,11 @@ class SessionDetailActivity extends FragmentActivity {
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putLong(SessionDetailFragment.ARG_ITEM_ID,
-                    intent.getLongExtra(SessionDetailFragment.ARG_ITEM_ID, 0));
-            SessionDetailFragment fragment = new SessionDetailFragment();
-            fragment.arguments = arguments
+            def id = intent.getLongExtra(EXTRA_ITEM_ID, 0)
+            def fragment = SessionDetailFragment.newInstance(id)
             supportFragmentManager.beginTransaction()
                     .add(R.id.session_detail_container, fragment)
-                    .commit();
+                    .commit()
         }
 
         def intentFilter = new IntentFilter(AgendaService.UPDATE_FAVORITES_RESPONSE)
