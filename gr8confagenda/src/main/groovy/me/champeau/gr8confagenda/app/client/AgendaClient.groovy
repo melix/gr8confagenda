@@ -60,9 +60,9 @@ class AgendaClient {
 
     File fetchAndCacheAgenda(Context context) {
         def agendaFile = new File(context.getCacheDir(), AGENDA_FILE)
-//        if (agendaFile.exists() && !shouldUpdate(context)) {
-//            return agendaFile
-//        }
+        if (agendaFile.exists() && !shouldUpdate(context)) {
+            return agendaFile
+        }
         String agenda = fetchAgenda()
         if (agenda) {
             agendaFile.write(agenda ?: "", 'UTF-8')
