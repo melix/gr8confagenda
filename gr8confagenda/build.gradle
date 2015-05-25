@@ -52,8 +52,8 @@ android {
 
 dependencies {
     compile 'com.android.support:support-v4:22.0.0'
-    compile 'org.codehaus.groovy:groovy:2.4.1:grooid'
-    compile ('org.codehaus.groovy:groovy-json:2.4.0-beta-1') {
+    compile 'org.codehaus.groovy:groovy:2.4.3:grooid'
+    compile ('org.codehaus.groovy:groovy-json:2.4.3') {
         transitive = false
     }
     compile 'com.koushikdutta.urlimageviewhelper:urlimageviewhelper:1.0.4'
