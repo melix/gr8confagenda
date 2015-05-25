@@ -7,6 +7,15 @@ This is the source code for the GR8Conf agenda application as found on Google Pl
 
 This application is fully written in [Groovy](http://groovy.codehaus.org).
 
+Agenda for a specific conference
+---
+TO load a specific conference event two changes must be made:
+
+`me.champeau.gr8confagenda.app.SessionListActivity.BASE_DATE` must be set to the start date of the event
+`me.champeau.gr8confagenda.app.client.AgendaClient.CONFERENCE_ID` must be set to the conference ID (1: GR8Conf EU 2014, 2: GR8Conf US 2014, 3: GR8Conf EU 2015, 4: GR8Conf US 2015, etc...)
+
+All this should be configurable in the future, for now this is what we live with.
+
 License
 ---
 

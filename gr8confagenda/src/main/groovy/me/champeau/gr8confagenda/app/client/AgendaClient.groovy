@@ -10,7 +10,7 @@ import groovy.transform.CompileStatic
 class AgendaClient {
     private final String AGENDA_FILE = "agenda.json"
     private final String STATUS_FILE = "status.bin"
-    private final int CONFERENCE_ID = 2;
+    private final int CONFERENCE_ID = 3;
 
     public static final long GENERATED_ID_BASE = 1_000_000_000
     private long generatedId = GENERATED_ID_BASE
@@ -60,9 +60,9 @@ class AgendaClient {
 
     File fetchAndCacheAgenda(Context context) {
         def agendaFile = new File(context.getCacheDir(), AGENDA_FILE)
-        if (agendaFile.exists() && !shouldUpdate(context)) {
-            return agendaFile
-        }
+//        if (agendaFile.exists() && !shouldUpdate(context)) {
+//            return agendaFile
+//        }
         String agenda = fetchAgenda()
         if (agenda) {
             agendaFile.write(agenda ?: "", 'UTF-8')

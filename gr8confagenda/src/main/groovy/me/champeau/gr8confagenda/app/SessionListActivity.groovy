@@ -1,7 +1,5 @@
 package me.champeau.gr8confagenda.app
-
 import android.app.ActionBar
-import android.app.Activity
 import android.app.FragmentTransaction
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -21,7 +19,6 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import groovy.transform.CompileStatic
-
 /**
  * An activity representing a list of Sessions. This activity
  * has different presentations for handset and tablet-size devices. On
@@ -43,6 +40,8 @@ class SessionListActivity extends FragmentActivity
         implements SessionListFragment.Callbacks, ActionBar.TabListener {
 
     private final static String SELECTED_TAB = "selectedTab";
+    public static final String DATE_FORMAT = 'yyyy-MM-dd'
+    public static final String BASE_DATE = '2015-06-02'
 
     private BroadcastReceiver broadcastReceiver
 
@@ -156,8 +155,9 @@ class SessionListActivity extends FragmentActivity
     private void populateActionBar() {
         def bar = getActionBar()
         bar.navigationMode = ActionBar.NAVIGATION_MODE_TABS
-        bar.addTab bar.newTab().setText('Conference day 1').setTabListener(this)
-        bar.addTab bar.newTab().setText('Conference day 2').setTabListener(this)
+        bar.addTab bar.newTab().setText('University Day').setTabListener(this)
+        bar.addTab bar.newTab().setText('Conference Day 1').setTabListener(this)
+        bar.addTab bar.newTab().setText('Conference Day 2').setTabListener(this)
     }
 
     /**
@@ -184,7 +184,8 @@ class SessionListActivity extends FragmentActivity
 
     protected void doFilter() {
         def tab = actionBar.selectedTab
-        sessionListAdapter.filter.filter("2014-07-${28 + tab.position}")
+        def baseDate = Date.parse(DATE_FORMAT, BASE_DATE) + tab.position
+        sessionListAdapter.filter.filter(baseDate.format(DATE_FORMAT))
 
     }
 
