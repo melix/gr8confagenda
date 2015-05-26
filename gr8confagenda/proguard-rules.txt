@@ -19,12 +19,10 @@
 -dontobfuscate
 -keep class org.codehaus.groovy.vmplugin.**
 -keep class org.codehaus.groovy.runtime.dgm*
--keepclassmembers class org.codehaus.groovy.runtime.dgm* {
-  *;
-}
--keepclassmembers class ** implements org.codehaus.groovy.runtime.GeneratedClosure {
-  *;
-}
+-keepclassmembers class org.codehaus.groovy.runtime.dgm* {*;}
+-keepclassmembers class ** implements org.codehaus.groovy.runtime.GeneratedClosure {*;}
+-keepclassmembers class org.codehaus.groovy.reflection.GroovyClassValue* {*;}
+-keepclassmembers class me.champeau.gr8confagenda.app.client.AgendaClient {*;}
 -dontwarn org.codehaus.groovy.**
 -dontwarn groovy**
 -dontwarn me.champeau.gr8confagenda.app.SessionListFragment
