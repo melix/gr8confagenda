@@ -13,5 +13,17 @@
     <string name="action_refresh_agenda">Refresh agenda</string>
     <string name="action_change_conference">Change Conference</string>
     <string name="action_refresh_conferences">Refresh Conferences</string>
+    <string name="profile_image">Profile image</string>
+    <string name="session_title">Session title</string>
+    <string name="speaker">Speaker</string>
+    <string name="track">Track</string>
+    <string name="slot">Slot</string>
+    <string name="twitter">Twitter</string>
+    <string name="session_abstract">Abstract</string>
+    <string name="session_text">Session text</string>
+    <string name="speaker_about">About the speaker</string>
+    <string name="speaker_detail">Speaker detail</string>
+    <string name="splash_image_alt">GR8Conf</string>
+    <string name="star_image_alt">Star</string>
 
 </resources>
