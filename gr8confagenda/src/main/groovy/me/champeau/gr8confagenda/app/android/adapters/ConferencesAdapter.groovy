@@ -1,6 +1,7 @@
 package me.champeau.gr8confagenda.app.android.adapters
 
 import android.content.Context
+import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,12 +10,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import groovy.transform.CompileStatic
 import me.champeau.gr8confagenda.app.R
+import me.champeau.gr8confagenda.app.android.persistence.UserDefaults
 import me.champeau.gr8confagenda.app.client.Conference
 
 @CompileStatic
 class ConferencesAdapter extends RecyclerView.Adapter<ConferencesAdapter.ConferenceViewHolder> {
-
-    private static final String TAG = ConferencesAdapter.class.simpleName
 
     private static int ROW_TYPE_CONFERENCES = 1
 
@@ -72,10 +72,16 @@ class ConferencesAdapter extends RecyclerView.Adapter<ConferencesAdapter.Confere
         void bindConference(Conference conference) {
             this.conference = conference
             nameTextView?.text = "${conference.name} ( ${conference.start} - ${conference.end} )"
+            nameTextView?.setTypeface(null, isSelectedConference(conference) ? Typeface.BOLD : Typeface.NORMAL)
+        }
+
+        boolean isSelectedConference(Conference conference) {
+            new UserDefaults(context).conferenceId == conference.id
         }
 
         @Override
         void onClick(View v) {
+            notifyDataSetChanged()
             adapterDelegate?.conferenceTapped(conference)
         }
     }

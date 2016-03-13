@@ -14,7 +14,6 @@ import me.champeau.gr8confagenda.app.gr8confapi.GR8ConfAPI
  */
 @CompileStatic
 class ConferencesService extends IntentService {
-    private static final String TAG = ConferencesService.class.simpleName
     public static final String CONFERENCES_CATEGORY = "${ConferencesService}Category"
     public static final String CONFERENCES_LIST_RESPONSE = "${ConferencesService}.SessionListResponse"
 

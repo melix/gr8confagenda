@@ -63,7 +63,7 @@ class AgendaService extends IntentService {
             }
         }
 
-        new UserDefaults(getApplicationContext()).favourites =  favorites
+        new UserDefaults(getApplicationContext()).favourites = favorites
 
         def response = new Intent()
         response.setAction(UPDATE_FAVORITES_RESPONSE)
@@ -71,10 +71,9 @@ class AgendaService extends IntentService {
         sendBroadcast(response)
     }
 
-
-
     private void doFetchAgenda() {
-        def client = new AgendaClient(GR8ConfAPI.ROOT_API_URL)
+        int conferenceId = new UserDefaults(getApplicationContext()).getConferenceId()
+        def client = new AgendaClient(GR8ConfAPI.ROOT_API_URL, conferenceId)
         client.fetchAgenda(applicationContext) { speakers, sessions ->
             Application.instance.sessions = (List<Session>) sessions
             Application.instance.speakers = (List<Speaker>) speakers
@@ -86,6 +85,4 @@ class AgendaService extends IntentService {
         response.addCategory(CATEGORY)
         sendBroadcast(response)
     }
-
-
 }

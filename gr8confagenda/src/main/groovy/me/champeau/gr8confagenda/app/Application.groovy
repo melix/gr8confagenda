@@ -1,9 +1,8 @@
 package me.champeau.gr8confagenda.app
-
 import groovy.transform.CompileStatic
 import me.champeau.gr8confagenda.app.client.Conference
 import me.champeau.gr8confagenda.app.client.Session
-import me.champeau.gr8confagenda.app.client.Speaker;
+import me.champeau.gr8confagenda.app.client.Speaker
 
 @CompileStatic
 @Singleton

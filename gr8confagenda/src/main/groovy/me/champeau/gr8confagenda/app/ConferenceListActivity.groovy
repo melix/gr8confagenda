@@ -14,12 +14,11 @@ import android.widget.Toast
 import groovy.transform.CompileStatic
 import me.champeau.gr8confagenda.app.android.adapters.ConferencesAdapter
 import me.champeau.gr8confagenda.app.android.adapters.IConferenceAdapterDelegate
+import me.champeau.gr8confagenda.app.android.persistence.UserDefaults
 import me.champeau.gr8confagenda.app.client.Conference
 
 @CompileStatic
 class ConferenceListActivity extends Activity implements IConferenceAdapterDelegate {
-
-    private static final String TAG = ConferenceListActivity.class.simpleName
 
     private BroadcastReceiver broadcastReceiver
 
@@ -83,5 +82,12 @@ class ConferenceListActivity extends Activity implements IConferenceAdapterDeleg
     }
 
     void conferenceTapped(Conference conference) {
+
+        if(conference?.id) {
+            new UserDefaults(this).setConferenceId(conference.id)
+            Intent intent = new Intent(this, AgendaService)
+            startService(intent)
+            Toast.makeText(this, "Refreshing Agenda", Toast.LENGTH_SHORT).show()
+        }
     }
 }

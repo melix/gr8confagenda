@@ -54,6 +54,10 @@ class ConferencesClient {
                     }
                 }
             }
+            conferences.sort { a, b ->
+                b.start <=> a.start
+            }
+
             callback(conferences)
         } else {
             Toast.makeText(ctx, "Unable to fetch conferences. Please check connectivity.", Toast.LENGTH_SHORT).show()
@@ -65,7 +69,7 @@ class ConferencesClient {
             return null
         }
         new Conference(
-                id: (Long) source.id,
+                id: (int) source.id,
                 name: (String) source.name,
                 location: (String) source.location,
                 start: (String) source.start,

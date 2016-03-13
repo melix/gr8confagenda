@@ -4,7 +4,7 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 class Conference {
-    Long id
+    int id
     String name
     String location
     // yyyy-MM-dd
