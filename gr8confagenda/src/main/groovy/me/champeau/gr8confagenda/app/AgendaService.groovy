@@ -1,7 +1,7 @@
-package me.champeau.gr8confagenda.app;
+package me.champeau.gr8confagenda.app
 
 import android.app.IntentService
-import android.content.Context;
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Handler
@@ -10,6 +10,7 @@ import groovy.transform.CompileStatic
 import me.champeau.gr8confagenda.app.client.AgendaClient
 import me.champeau.gr8confagenda.app.client.Session
 import me.champeau.gr8confagenda.app.client.Speaker
+import me.champeau.gr8confagenda.app.gr8confapi.GR8ConfAPI
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -81,7 +82,7 @@ class AgendaService extends IntentService {
     }
 
     private void doFetchAgenda() {
-        def client = new AgendaClient('http://cfp.gr8conf.org')
+        def client = new AgendaClient(GR8ConfAPI.ROOT_API_URL)
         client.fetchAgenda(applicationContext) { speakers, sessions ->
             Application.instance.sessions = (List<Session>) sessions
             Application.instance.speakers = (List<Speaker>) speakers
