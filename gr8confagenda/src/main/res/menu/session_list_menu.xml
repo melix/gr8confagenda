@@ -25,7 +25,7 @@
 
     <item android:id="@+id/action_change_conference"
         android:title="@string/action_change_conference"
-        android:icon="@drawable/ic_event_black_48dp"
+        android:icon="@drawable/ic_action_event"
         android:showAsAction="ifRoom|collapseActionView"
         android:onClick="changeConference"/>
 
