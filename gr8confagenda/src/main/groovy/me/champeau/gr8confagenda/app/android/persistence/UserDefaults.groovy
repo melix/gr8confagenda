@@ -7,6 +7,7 @@ import me.champeau.gr8confagenda.app.R;
 
 @CompileStatic
 class UserDefaults {
+    private static final String USER_DEFAULTS_KEY_FAVORITES = 'favorites'
 
     Context context
 
@@ -27,13 +28,13 @@ class UserDefaults {
 
     void setFavourites(List<Long> favorites) {
         edit {
-            putStringSet("favorites", favorites.collect { it.toString() } as Set)
+            putStringSet(USER_DEFAULTS_KEY_FAVORITES, favorites.collect { it.toString() } as Set)
         }
     }
 
     Set<Long> getFavourites() {
         SharedPreferences sharedPref = prefs()
-        sharedPref.getStringSet ( "favorites", new LinkedHashSet<String> ( ) ).collect {
+        sharedPref.getStringSet (USER_DEFAULTS_KEY_FAVORITES, new LinkedHashSet<String> ( ) ).collect {
             it.toLong()
         } as Set
     }
