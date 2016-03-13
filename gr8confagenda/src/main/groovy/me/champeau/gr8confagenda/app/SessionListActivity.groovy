@@ -341,6 +341,11 @@ class SessionListActivity extends FragmentActivity
         startService(intent)
     }
 
+    void changeConference(MenuItem item) {
+        Intent intent = new Intent(this, ConferenceListActivity.class)
+        startActivity(intent)
+    }
+
     public void chooseTrack(MenuItem item) {
 
     }

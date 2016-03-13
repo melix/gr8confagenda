@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item android:id="@+id/action_select_track"
         android:title="@string/action_track"
         android:icon="@drawable/ic_action_labels"
@@ -8,15 +9,24 @@
         android:showAsAction="ifRoom|collapseActionView"
         android:actionLayout="@layout/track_list"
         />
+
     <item android:id="@+id/action_select_speaker"
         android:icon="@drawable/ic_action_person"
         android:title="@string/action_speaker"
         android:onClick="chooseSpeaker"
         android:showAsAction="ifRoom|collapseActionView"
         android:actionLayout="@layout/speaker_list"/>
+
     <item android:id="@+id/action_refresh_agenda"
         android:title="@string/action_refresh_agenda"
         android:icon="@drawable/ic_action_refresh"
         android:showAsAction="ifRoom|collapseActionView"
         android:onClick="refreshAgenda"/>
+
+    <item android:id="@+id/action_change_conference"
+        android:title="@string/action_change_conference"
+        android:icon="@drawable/ic_event_black_48dp"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:onClick="changeConference"/>
+
 </menu>
