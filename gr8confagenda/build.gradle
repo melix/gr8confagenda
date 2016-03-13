@@ -3,8 +3,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.1.0'
-        classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.6'
+        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.8'
     }
 }
 
@@ -12,12 +12,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'groovyx.grooid.groovy-android'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 22
+        minSdkVersion 16
+        targetSdkVersion 23
         versionCode 5
         versionName "1.3.1"
     }
@@ -42,7 +42,6 @@ android {
             signingConfig signingConfigs.release
         }
     }
-
     packagingOptions {
         // workaround for http://stackoverflow.com/questions/20673625/android-gradle-plugin-0-7-0-duplicate-files-during-packaging-of-apk
         exclude 'META-INF/LICENSE.txt'
@@ -51,8 +50,9 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:22.0.0'
-    compile 'org.codehaus.groovy:groovy:2.4.3:grooid'
+    compile 'com.android.support:support-v4:23.2.1'
+    compile 'com.android.support:recyclerview-v7:23.2.1'
+    compile 'org.codehaus.groovy:groovy:2.4.5:grooid'
     compile ('org.codehaus.groovy:groovy-json:2.4.3') {
         transitive = false
     }
