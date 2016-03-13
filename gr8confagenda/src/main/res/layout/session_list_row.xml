@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:text="08:00-09:00"
         android:textSize="15sp"
-        android:layout_marginRight="4dp"/>
+        android:layout_marginEnd="4dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
