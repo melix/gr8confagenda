@@ -8,6 +8,7 @@ import me.champeau.gr8confagenda.app.R;
 
 @CompileStatic
 class UserDefaults {
+    private static final String PREFS_NAME = 'GR8ConfPrefs'
     private static final String USER_DEFAULTS_KEY_FAVORITES = 'favorites'
     private static final String USER_DEFAULTS_KEY_CONFERENCE_ID = 'conferenceId'
 
@@ -25,7 +26,7 @@ class UserDefaults {
     }
 
     private SharedPreferences prefs() {
-        context.getSharedPreferences(context.getString(R.string.favorites_list), Context.MODE_PRIVATE)
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
 
     void setFavourites(Set<Long> favorites) {
@@ -42,7 +43,6 @@ class UserDefaults {
     }
 
     void setConferenceId(int conferenceId) {
-        SharedPreferences sharedPref = prefs()
         edit {
             putInt(USER_DEFAULTS_KEY_CONFERENCE_ID, conferenceId)
         }
