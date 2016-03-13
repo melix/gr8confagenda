@@ -36,6 +36,11 @@
             android:exported="false" >
         </service>
 
+        <service
+            android:name="me.champeau.gr8confagenda.app.ConferencesService"
+            android:exported="false" >
+        </service>
+
     </application>
 
 </manifest>
