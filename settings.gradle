@@ -1,1 +1,1 @@
-include ':gr8confagenda', 'gr8confagenda'
+include 'gr8confagenda'

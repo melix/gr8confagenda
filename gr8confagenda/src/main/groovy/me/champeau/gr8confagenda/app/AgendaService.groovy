@@ -1,16 +1,14 @@
-package me.champeau.gr8confagenda.app;
-
+package me.champeau.gr8confagenda.app
 import android.app.IntentService
-import android.content.Context;
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Handler
 import android.widget.Toast
 import groovy.transform.CompileStatic
+import me.champeau.gr8confagenda.app.android.persistence.UserDefaults
 import me.champeau.gr8confagenda.app.client.AgendaClient
 import me.champeau.gr8confagenda.app.client.Session
 import me.champeau.gr8confagenda.app.client.Speaker
-
+import me.champeau.gr8confagenda.app.gr8confapi.GR8ConfAPI
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread. This service contacts the remote REST
@@ -64,40 +62,27 @@ class AgendaService extends IntentService {
                 favorites.remove(sid)
             }
         }
-        edit {
-            putStringSet("favorites", favorites.collect { it.toString() } as Set)
-        }
+
+        new UserDefaults(getApplicationContext()).favourites = favorites
+
         def response = new Intent()
         response.setAction(UPDATE_FAVORITES_RESPONSE)
         response.addCategory(CATEGORY)
         sendBroadcast(response)
     }
 
-    private void edit(@DelegatesTo(SharedPreferences.Editor) Closure cl) {
-        def edit = prefs().edit()
-        cl.delegate = edit
-        cl()
-        edit.commit()
-    }
-
     private void doFetchAgenda() {
-        def client = new AgendaClient('http://cfp.gr8conf.org')
+        int conferenceId = new UserDefaults(getApplicationContext()).getConferenceId()
+        def client = new AgendaClient(GR8ConfAPI.ROOT_API_URL, conferenceId)
         client.fetchAgenda(applicationContext) { speakers, sessions ->
             Application.instance.sessions = (List<Session>) sessions
             Application.instance.speakers = (List<Speaker>) speakers
         }
-        SharedPreferences sharedPref = prefs()
-        Application.instance.favorites = sharedPref.getStringSet("favorites", new LinkedHashSet<String>()).collect {
-            it.toLong()
-        } as Set
+        Application.instance.favorites = new UserDefaults(getApplicationContext()).favourites
+
         def response = new Intent()
         response.setAction(SESSION_LIST_RESPONSE)
         response.addCategory(CATEGORY)
         sendBroadcast(response)
-    }
-
-    private SharedPreferences prefs() {
-        SharedPreferences sharedPref = applicationContext.getSharedPreferences(getString(R.string.favorites_list), Context.MODE_PRIVATE)
-        sharedPref
     }
 }

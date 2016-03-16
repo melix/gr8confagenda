@@ -5,12 +5,16 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.nfc.Tag
 import android.os.Bundle
+import android.provider.Settings
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.MenuItemCompat
 import android.support.v4.view.ViewPager
+import android.text.TextUtils
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -19,6 +23,11 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import groovy.transform.CompileStatic
+import me.champeau.gr8confagenda.app.android.persistence.UserDefaults
+import me.champeau.gr8confagenda.app.client.Session
+
+import java.text.SimpleDateFormat
+
 /**
  * An activity representing a list of Sessions. This activity
  * has different presentations for handset and tablet-size devices. On
@@ -38,6 +47,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class SessionListActivity extends FragmentActivity
         implements SessionListFragment.Callbacks, ActionBar.TabListener {
+
+    static final String TAG = SessionListActivity.class.simpleName
 
     private final static String SELECTED_TAB = "selectedTab";
     public static final String DATE_FORMAT = 'yyyy-MM-dd'
@@ -108,6 +119,9 @@ class SessionListActivity extends FragmentActivity
             void onReceive(Context context, Intent intent) {
                 if (intent.action==AgendaService.UPDATE_FAVORITES_RESPONSE) {
                     updateFavoriteIcon()
+                } else if ( intent.action == AgendaService.SESSION_LIST_RESPONSE ) {
+                    sessionListAdapter.notifyDataSetChanged()
+                    doFilter()
                 } else {
                     doFilter()
                 }
@@ -120,6 +134,8 @@ class SessionListActivity extends FragmentActivity
         registerReceiver(broadcastReceiver, intentFilter)
 
         populateActionBar()
+
+        getActionBar().title = selectedConferenceName()
     }
 
     @Override
@@ -132,7 +148,9 @@ class SessionListActivity extends FragmentActivity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(SELECTED_TAB, actionBar.selectedTab.position)
+        if(actionBar.selectedTab) {
+            outState.putInt(SELECTED_TAB, actionBar.selectedTab.position)
+        }
         super.onSaveInstanceState(outState)
     }
 
@@ -155,9 +173,16 @@ class SessionListActivity extends FragmentActivity
     private void populateActionBar() {
         def bar = getActionBar()
         bar.navigationMode = ActionBar.NAVIGATION_MODE_TABS
-        bar.addTab bar.newTab().setText('University Day').setTabListener(this)
-        bar.addTab bar.newTab().setText('Conference Day 1').setTabListener(this)
-        bar.addTab bar.newTab().setText('Conference Day 2').setTabListener(this)
+
+        for(Date tabDate : tabDates()) {
+            def tabName = tabDate.format(DATE_FORMAT)
+            bar.addTab bar.newTab().setText(tabName).setTabListener(this)
+        }
+    }
+
+    String selectedConferenceName() {
+        int conferenceId = new UserDefaults(this).conferenceId
+        Application.instance.conferences.find { it.id == conferenceId}?.name
     }
 
     /**
@@ -184,9 +209,13 @@ class SessionListActivity extends FragmentActivity
 
     protected void doFilter() {
         def tab = actionBar.selectedTab
-        def baseDate = Date.parse(DATE_FORMAT, BASE_DATE) + tab.position
-        sessionListAdapter.filter.filter(baseDate.format(DATE_FORMAT))
+        if(tab) {
+            Date baseDate = tabDates()[tab.position]
+            if(baseDate) {
+                sessionListAdapter.filter.filter(baseDate.format(DATE_FORMAT))
+            }
 
+        }
     }
 
     @Override
@@ -291,6 +320,12 @@ class SessionListActivity extends FragmentActivity
         true
     }
 
+    Set<Date> tabDates() {
+        List<Date> dates = Application.instance.sessions.collect { new Date().parse(DATE_FORMAT,it.slot.date) }
+        dates.sort { a, b ->  a <=> b }
+        dates as Set
+    }
+
     private static class SimpleArrayAdapter extends ArrayAdapter<String> {
 
         SimpleArrayAdapter(Context context, List<String> objects) {
@@ -300,7 +335,7 @@ class SessionListActivity extends FragmentActivity
     }
 
     private class SessionListFragmentAdapter extends FragmentPagerAdapter {
-        final SessionListFragment[] items = new SessionListFragment[3]
+        final SessionListFragment[] items = new SessionListFragment[tabDates().size()]
 
         SessionListFragmentAdapter() {
             super(getSupportFragmentManager())
@@ -308,7 +343,8 @@ class SessionListActivity extends FragmentActivity
 
         @Override
         Fragment getItem(int position) {
-            if (items[position]==null) {
+
+            if (items.size() > position && !items[position]) {
                 def fragment = new SessionListFragment()
                 fragment.listAdapter = sessionListAdapter
                 fragment.onAttach(SessionListActivity.this)
@@ -322,7 +358,7 @@ class SessionListActivity extends FragmentActivity
 
         @Override
         int getCount() {
-            3
+            tabDates().size()
         }
     }
 
@@ -339,6 +375,11 @@ class SessionListActivity extends FragmentActivity
         Toast.makeText(this, "Refreshing agenda", Toast.LENGTH_SHORT).show()
         Intent intent = new Intent(this, AgendaService)
         startService(intent)
+    }
+
+    void changeConference(MenuItem item) {
+        Intent intent = new Intent(this, ConferenceListActivity.class)
+        startActivity(intent)
     }
 
     public void chooseTrack(MenuItem item) {

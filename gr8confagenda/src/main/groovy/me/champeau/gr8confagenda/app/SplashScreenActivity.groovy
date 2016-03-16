@@ -11,30 +11,46 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class SplashScreenActivity extends Activity {
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        void onReceive(Context context, Intent intent) {
-            def next = new Intent(context, SessionListActivity)
-            context.startActivity(next)
-            finish()
-        }
-    }
+    private BroadcastReceiver broadcastReceiver
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash);
-        Intent intent = new Intent(this, AgendaService)
-        startService(intent)
-        def intentFilter = new IntentFilter(AgendaService.SESSION_LIST_RESPONSE)
+
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            void onReceive(Context context, Intent intent) {
+
+                if(intent.action == ConferencesService.CONFERENCES_LIST_RESPONSE) {
+                    Intent i = new Intent(context, AgendaService)
+                    context.startService(i)
+
+
+                } else if(intent.action == AgendaService.SESSION_LIST_RESPONSE) {
+                    def next = new Intent(context, SessionListActivity)
+                    context.startActivity(next)
+                    finish()
+                }
+            }
+        }
+
+        def intentFilter = new IntentFilter()
+        intentFilter.addAction(ConferencesService.CONFERENCES_LIST_RESPONSE)
+        intentFilter.addCategory(ConferencesService.CONFERENCES_CATEGORY)
+        intentFilter.addAction(AgendaService.SESSION_LIST_RESPONSE)
         intentFilter.addCategory(AgendaService.CATEGORY)
         registerReceiver(broadcastReceiver, intentFilter)
+
+        Intent intent = new Intent(this, ConferencesService)
+        startService(intent)
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy()
-        unregisterReceiver(broadcastReceiver);
+        if(broadcastReceiver) {
+            unregisterReceiver(broadcastReceiver);
+        }
     }
-
 }
