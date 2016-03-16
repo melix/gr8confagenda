@@ -12,4 +12,7 @@ class Conference {
     // yyyy-MM-dd
     String end
     String timeZone
+    double latitude
+    double longitude
+    int numberOfSessions
 }

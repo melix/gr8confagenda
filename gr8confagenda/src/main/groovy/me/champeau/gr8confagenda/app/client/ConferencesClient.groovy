@@ -54,6 +54,9 @@ class ConferencesClient {
                     }
                 }
             }
+            // Don't show conference which do not have yet any number of sessions
+            conferences = conferences.findAll {it.numberOfSessions > 0}
+
             conferences.sort { a, b ->
                 b.start <=> a.start
             }
@@ -68,12 +71,20 @@ class ConferencesClient {
         if (source==null) {
             return null
         }
-        new Conference(
+        def conference = new Conference(
                 id: (int) source.id,
                 name: (String) source.name,
                 location: (String) source.location,
                 start: (String) source.start,
                 end: (String) source.end,
-                timeZone: (String) source.timeZone)
+                timeZone: (String) source.timeZone,
+                numberOfSessions: (int)source.numberOfSessions)
+        if(source.latitude) {
+            conference.latitude = (double) source.latitude
+        }
+        if(source.longitude) {
+            conference.longitude = (double) source.longitude
+        }
+        conference
     }
 }
